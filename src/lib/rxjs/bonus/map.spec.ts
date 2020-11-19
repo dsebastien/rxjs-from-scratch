@@ -1,4 +1,4 @@
-import { from } from './from';
+import { from } from '../from';
 
 describe('map :', () => {
   it('should add 10 to each number', (done) => {
