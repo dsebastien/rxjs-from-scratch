@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-// import { Observable, of, interval } from 'rxjs';
+import { Observable } from '../lib/rxjs';
 
 interface Observer {
   next(val: any): void;
@@ -48,6 +48,9 @@ export class AppComponent implements OnInit {
       next(value) {
         console.log('first ', value);
       },
+      // error(err) {
+      //   console.log(err);
+      // },
       complete() {
         console.log('completed...');
       },
