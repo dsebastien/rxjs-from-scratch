@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { interval } from 'rxjs';
+import { share } from 'rxjs/operators';
 import { Observable } from '../lib/rxjs';
 
 interface Observer {
@@ -14,52 +16,24 @@ interface Observer {
 })
 export class AppComponent implements OnInit {
   ngOnInit() {
-    // data stream
-    const observer: Observer = {
+    // create stream of data
+    // cold observable
+    const interval$ = interval(1000);
+
+    // Hot observable with share
+    // const interval$ = interval(1000).pipe(share());
+
+    const observer = {
       next(value: any) {
-        console.log(value);
+        console.log(value, 'next');
       },
       error(err: any) {
         console.log(err);
       },
       complete() {
-        console.log('completed was called');
+        console.log('competed');
       },
     };
-
-    function producer(observer: Observer) {
-      let counter = 0;
-      const id = setInterval(() => {
-        observer.next(counter++);
-        console.log(counter);
-      }, 1000);
-
-      return {
-        unsubscribe() {
-          observer.complete();
-          clearInterval(id);
-        },
-      };
-    }
-
-    const interval$ = new Observable(producer);
-
-    const observer1 = {
-      next(value) {
-        console.log('first ', value);
-      },
-      // error(err) {
-      //   console.log(err);
-      // },
-      complete() {
-        console.log('completed...');
-      },
-    };
-
-    const subscription = interval$.subscribe(observer1);
-
-    setTimeout(() => {
-      subscription.unsubscribe();
-    }, 2000);
+    interval$.subscribe(observer);
   }
 }
