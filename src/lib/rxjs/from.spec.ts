@@ -67,12 +67,14 @@ describe('from:', () => {
     let result: any[][] = [];
     const observer = {
       next: (val: any) => {
+        console.log("received value: ", val);
         result = [...result, val];
       },
       error: (err) => {
         console.log('error');
       },
       complete: () => {
+        console.log("Result: ", JSON.stringify(result, null, 2));
         expect(actual.length).toEqual(result.length);
         expect(actual[0]).toEqual(result[0]);
         expect(actual[1]).toEqual(result[1]);

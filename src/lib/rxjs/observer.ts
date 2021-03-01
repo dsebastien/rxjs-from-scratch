@@ -1,12 +1,12 @@
-export interface IObserver<T = any, U = any> {
-  next: (value: T) => void;
-  error: (err: U) => void;
+export interface IObserver<ValueType = any, ErrorType = any> {
+  next: (value: ValueType) => void;
+  error: (err: ErrorType) => void;
   complete: () => void;
 }
 
-export const observer = (
-  next?: (value: any) => void,
-  error?: (err: any) => void,
+export const observer = <ValueType, ErrorType>(
+  next?: (value: ValueType) => void,
+  error?: (err: ErrorType) => void,
   complete?: () => void
 ): IObserver => ({
   next,
