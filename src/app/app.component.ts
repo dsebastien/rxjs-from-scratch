@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { interval } from 'rxjs';
-import { share } from 'rxjs/operators';
-import { Observable } from '../lib/rxjs';
 
 interface Observer {
   next(val: any): void;
   error(err: any): void;
   complete(): void;
+}
+
+interface Subscription {
+  unsubscribe(): void;
 }
 
 @Component({
@@ -18,8 +19,30 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     // create stream of data
     // cold observable
-    const interval$ = interval(1000);
 
+    function producer(observer: Observer): Subscription {
+      let second = 0;
+      const id = setInterval(() => {
+        observer.next(second++);
+      }, 1000);
+
+      return {
+        unsubscribe() {
+          clearInterval(id);
+        },
+      };
+    }
+
+    class Observable {
+      constructor(private producer) {}
+      subscribe(observer: Observer) {
+        return this.producer(observer);
+      }
+    }
+
+    const interval$ = new Observable(producer);
+
+    // const interval$ = interval(1000);
     // Hot observable with share
     // const interval$ = interval(1000).pipe(share());
 
@@ -34,6 +57,12 @@ export class AppComponent implements OnInit {
         console.log('competed');
       },
     };
-    interval$.subscribe(observer);
+    const subscription = interval$.subscribe(observer);
+
+    setTimeout(() => {
+      // unsubscribe to the stream
+      // Memory leaks...
+      subscription.unsubscribe();
+    }, 4000);
   }
 }
